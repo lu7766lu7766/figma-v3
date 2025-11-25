@@ -26,7 +26,7 @@
 
     <!-- 文章列表 -->
     <div class="blog-grid">
-      <Card v-for="i in 18" />
+      <Card v-for="post in posts" :post="post" />
     </div>
 
     <!-- 無結果提示 -->
@@ -67,4 +67,7 @@
 
 <script setup lang="ts">
 import Card from "./card.vue"
+import datas from "./mock/datas.json"
+let { posts, tags } = datas
+// console.log(posts, tags)
 </script>

@@ -1,20 +1,22 @@
 <template>
   <div class="blog-card">
-    <div class="blog-image">V</div>
+    <div class="blog-image">{{ post.title[0] }}</div>
     <div class="blog-content">
-      <h3 class="blog-title">Vue.js 入門指南</h3>
+      <h3 class="blog-title">{{ post.title }}</h3>
       <p class="blog-excerpt">
-        學習 Vue.js 的基礎概念，包括響應式資料、元件系統和生命週期鉤子。這是一個完整的入門教程，適合初學者開始學習現代前端框架。
+        {{ post.excerpt }}
       </p>
       <div class="blog-meta">
-        <span class="blog-date">2024/10/15</span>
-        <span class="blog-read-time">5 分鐘閱讀</span>
+        <span class="blog-date">{{ post.date }}</span>
+        <span class="blog-read-time">{{ post.readTime }} 分鐘閱讀</span>
       </div>
       <div class="blog-tags">
-        <span class="blog-tag">Vue.js</span>
-        <span class="blog-tag">前端</span>
-        <span class="blog-tag">入門</span>
+        <span class="blog-tag" v-for="tag in post.tags">{{ tag }}</span>
       </div>
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+let props = defineProps(["post"])
+</script>
