@@ -17,6 +17,7 @@
     {{ show }}
   </div>
   <div v-html="html"></div>
+  <div v-for="(item, index) in [10, 20, 30]">{{ item }}-{{ index }}</div>
 </template>
 
 <script setup lang="ts">
