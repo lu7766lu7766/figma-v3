@@ -1,5 +1,9 @@
 <template>
-  <h1 class="red" @click="onClock">hello world {{ props.value }} - {{ props.parentCount }} - {{ subCount }}</h1>
+  <div>
+    <slot name="head">head conternt</slot>
+    <h1 class="red" @click="onClock">hello world {{ props.value }} - {{ props.parentCount }} - {{ subCount }}</h1>
+    <slot :subCount="subCount">default content</slot>
+  </div>
 </template>
 
 <script setup lang="ts">

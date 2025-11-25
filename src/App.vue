@@ -2,7 +2,13 @@
   <h1>You did it!</h1>
   <div v-if="show">
     <div ref="$dom">ref dom</div>
-    <HelloWorld v-for="x in 5" :value="x" :parentCount="count" @click="onHelloWorldClick" />
+    <HelloWorld v-for="x in 5" :value="x" :parentCount="count" @click="onHelloWorldClick">
+      <template #default="{ subCount }">
+        <h1>default slot content {{ x }} - subCount:{{ subCount }}</h1>
+      </template>
+
+      <template #head>head slot content {{ x }}</template>
+    </HelloWorld>
   </div>
   <div>count: {{ count }}</div>
   <div>double: {{ double }}</div>
