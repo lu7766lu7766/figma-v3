@@ -1,0 +1,134 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "Vue.js 入門指南",
+      "excerpt": "學習 Vue.js 的基礎概念，包括響應式資料、元件系統和生命週期鉤子。這是一個完整的入門教程，適合初學者開始學習現代前端框架。",
+      "tags": ["Vue.js", "前端", "入門"],
+      "date": "2024-10-15",
+      "readTime": 5
+    },
+    {
+      "id": 2,
+      "title": "JavaScript ES6+ 新特性",
+      "excerpt": "深入了解 JavaScript ES6 以後的新特性，包括箭頭函數、解構賦值、模板字串、Promise 和 async/await 等現代語法。",
+      "tags": ["JavaScript", "ES6", "程式設計"],
+      "date": "2024-10-12",
+      "readTime": 8
+    },
+    {
+      "id": 3,
+      "title": "CSS Grid 佈局完全指南",
+      "excerpt": "CSS Grid 是現代網頁佈局的強大工具。本文將介紹 Grid 的各種屬性和用法，幫助你創建複雜而靈活的網頁佈局。",
+      "tags": ["CSS", "佈局", "網頁設計"],
+      "date": "2024-10-10",
+      "readTime": 6
+    },
+    {
+      "id": 4,
+      "title": "React vs Vue 比較分析",
+      "excerpt": "詳細比較 React 和 Vue 兩個熱門前端框架的特點、優缺點和適用場景，幫助開發者選擇合適的技術棧。",
+      "tags": ["React", "Vue.js", "框架比較"],
+      "date": "2024-10-08",
+      "readTime": 10
+    },
+    {
+      "id": 5,
+      "title": "Node.js 後端開發入門",
+      "excerpt": "從零開始學習 Node.js 後端開發，包括 Express 框架、資料庫連接、RESTful API 設計和身份驗證等核心概念。",
+      "tags": ["Node.js", "後端", "Express"],
+      "date": "2024-10-05",
+      "readTime": 12
+    },
+    {
+      "id": 6,
+      "title": "響應式網頁設計最佳實踐",
+      "excerpt": "學習如何創建在各種裝置上都能完美顯示的響應式網站，包括斷點設置、彈性佈局和媒體查詢的使用技巧。",
+      "tags": ["響應式設計", "CSS", "行動裝置"],
+      "date": "2024-10-03",
+      "readTime": 7
+    },
+    {
+      "id": 7,
+      "title": "TypeScript 完整教學",
+      "excerpt": "從基礎語法到進階應用，全面掌握 TypeScript 的強型別系統，提升 JavaScript 開發的可維護性和可靠性。",
+      "tags": ["TypeScript", "JavaScript", "型別系統"],
+      "date": "2024-10-01",
+      "readTime": 9
+    },
+    {
+      "id": 8,
+      "title": "Webpack 打包工具詳解",
+      "excerpt": "深入了解 Webpack 的配置和優化技巧，學習如何建立高效的前端開發環境和生產環境的打包流程。",
+      "tags": ["Webpack", "打包工具", "前端工程"],
+      "date": "2024-09-28",
+      "readTime": 11
+    },
+    {
+      "id": 9,
+      "title": "Git 版本控制進階技巧",
+      "excerpt": "掌握 Git 的進階操作，包括分支管理、合併策略、衝突解決和團隊協作的最佳實踐方法。",
+      "tags": ["Git", "版本控制", "團隊協作"],
+      "date": "2024-09-25",
+      "readTime": 8
+    },
+    {
+      "id": 10,
+      "title": "API 設計最佳實踐",
+      "excerpt": "學習設計優雅、可維護的 RESTful API，包括資源命名、HTTP 狀態碼、錯誤處理和 API 文檔撰寫。",
+      "tags": ["API", "REST", "後端設計"],
+      "date": "2024-09-22",
+      "readTime": 10
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "前端開發",
+      "description": "前端相關技術文章",
+      "color": "#667eea"
+    },
+    {
+      "id": 2,
+      "name": "後端開發",
+      "description": "後端相關技術文章",
+      "color": "#764ba2"
+    },
+    {
+      "id": 3,
+      "name": "開發工具",
+      "description": "開發工具和環境配置",
+      "color": "#f093fb"
+    }
+  ],
+  "tags": [
+    "Vue.js",
+    "React", 
+    "JavaScript",
+    "TypeScript",
+    "CSS",
+    "Node.js",
+    "前端",
+    "後端",
+    "入門",
+    "進階",
+    "框架比較",
+    "響應式設計",
+    "網頁設計",
+    "程式設計",
+    "ES6",
+    "佈局",
+    "Express",
+    "行動裝置",
+    "型別系統",
+    "Webpack",
+    "打包工具",
+    "前端工程",
+    "Git",
+    "版本控制",
+    "團隊協作",
+    "API",
+    "REST",
+    "後端設計"
+  ]
+}
