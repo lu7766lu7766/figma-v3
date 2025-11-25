@@ -9,8 +9,7 @@
   <div class="container">
     <!-- 搜尋區域 -->
     <div class="search-section">
-      <input type="text" class="search-input" placeholder="🔍 搜尋文章標題或內容..." />
-
+      <input type="text" class="search-input" placeholder="🔍 搜尋文章標題或內容..." v-model="keyword" />
       <div class="filter-tags">
         <button class="tag-btn active">全部標籤</button>
         <button class="tag-btn">Vue.js</button>
@@ -26,7 +25,7 @@
 
     <!-- 文章列表 -->
     <div class="blog-grid">
-      <Card v-for="post in posts" :post="post" />
+      <Card v-for="post in filterPosts" :post="post" />
     </div>
 
     <!-- 無結果提示 -->
@@ -66,8 +65,13 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref } from "vue"
 import Card from "./card.vue"
 import datas from "./mock/datas.json"
+
+let keyword = ref("")
 let { posts, tags } = datas
+
+let filterPosts = computed(() => posts.filter((post) => post.title.includes(keyword.value)))
 // console.log(posts, tags)
 </script>
