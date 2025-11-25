@@ -1,13 +1,21 @@
 <template>
   <h1>You did it!</h1>
-  <HelloWorld />
-  <HelloWorld />
-  <HelloWorld />
+  <div v-if="show">
+    <HelloWorld />
+    <HelloWorld />
+    <HelloWorld />
+  </div>
   <div>count: {{ count }}</div>
   <div>double: {{ double }}</div>
   <div>data: {{ data }}</div>
   <button @click="onPlusClick">+1</button>
   <input type="text" v-model="count" @keyup.enter="onKeyup" />
+  <div>
+    show:
+    <input type="checkbox" v-model="show" />
+    {{ show }}
+  </div>
+  <div v-html="html"></div>
 </template>
 
 <script setup lang="ts">
@@ -16,6 +24,8 @@ import { ref, computed, reactive, watch } from "vue"
 let count = ref(0)
 let double = computed(() => count.value * 2)
 let data = reactive({ count: 0 })
+let show = ref(false)
+let html = ref("<h1>hello</h1>")
 // let double = computed(function () {
 //   return count.value * 2
 // })
