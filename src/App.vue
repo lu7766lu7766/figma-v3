@@ -2,7 +2,7 @@
   <h1>You did it!</h1>
   <div v-if="show">
     <div ref="$dom">ref dom</div>
-    <HelloWorld v-for="x in 5" :value="x" :parentCount="count" />
+    <HelloWorld v-for="x in 5" :value="x" :parentCount="count" @click="onHelloWorldClick" />
   </div>
   <div>count: {{ count }}</div>
   <div>double: {{ double }}</div>
@@ -46,6 +46,10 @@ let onPlusClick = () => {
 }
 let onKeyup = (e: KeyboardEvent) => {
   console.log(`keypress key:${e.key} code:${e.code} keyCode:${e.keyCode}`)
+}
+
+let onHelloWorldClick = (value: number, subCount: number) => {
+  console.log(`value: ${value}, subCount:${subCount}`)
 }
 </script>
 
