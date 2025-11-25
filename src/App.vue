@@ -1,21 +1,40 @@
 <template>
   <h1>You did it!</h1>
   <HelloWorld />
+  <HelloWorld />
+  <HelloWorld />
   <div>count: {{ count }}</div>
   <div>double: {{ double }}</div>
+  <div>data: {{ data }}</div>
+  <button @click="onPlusClick">+1</button>
+  <input type="text" v-model="count" @keyup.enter="onKeyup" />
 </template>
 
 <script setup lang="ts">
 import HelloWorld from "./hello_world.vue"
-import { ref, computed } from "vue"
+import { ref, computed, reactive, watch } from "vue"
 let count = ref(0)
 let double = computed(() => count.value * 2)
+let data = reactive({ count: 0 })
 // let double = computed(function () {
 //   return count.value * 2
 // })
-setInterval(() => {
+watch([count, data], () => {
+  console.log("count or data changed: " + count.value + " " + data.count)
+})
+// setInterval(() => {
+//   count.value++
+// }, 1000)
+// setInterval(() => {
+//   data.count += 2
+// }, 1500)
+let onPlusClick = () => {
   count.value++
-}, 1000)
+  data.count += 3
+}
+let onKeyup = (e: KeyboardEvent) => {
+  console.log(`keypress key:${e.key} code:${e.code} keyCode:${e.keyCode}`)
+}
 </script>
 
 <style scoped></style>
