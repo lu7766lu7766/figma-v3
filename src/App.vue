@@ -1,6 +1,7 @@
 <template>
   <h1>You did it!</h1>
   <div v-if="show">
+    <div ref="$dom">ref dom</div>
     <HelloWorld />
     <HelloWorld />
     <HelloWorld />
@@ -26,6 +27,7 @@ let double = computed(() => count.value * 2)
 let data = reactive({ count: 0 })
 let show = ref(false)
 let html = ref("<h1>hello</h1>")
+let $dom = ref()
 // let double = computed(function () {
 //   return count.value * 2
 // })
@@ -41,6 +43,7 @@ watch([count, data], () => {
 let onPlusClick = () => {
   count.value++
   data.count += 3
+  console.log($dom.value)
 }
 let onKeyup = (e: KeyboardEvent) => {
   console.log(`keypress key:${e.key} code:${e.code} keyCode:${e.keyCode}`)
