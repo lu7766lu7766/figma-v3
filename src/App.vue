@@ -2,9 +2,7 @@
   <h1>You did it!</h1>
   <div v-if="show">
     <div ref="$dom">ref dom</div>
-    <HelloWorld />
-    <HelloWorld />
-    <HelloWorld />
+    <HelloWorld v-for="x in 5" :value="x" />
   </div>
   <div>count: {{ count }}</div>
   <div>double: {{ double }}</div>
