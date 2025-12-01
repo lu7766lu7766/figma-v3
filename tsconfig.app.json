@@ -7,6 +7,10 @@
 
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": true
   }
 }
