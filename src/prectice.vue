@@ -3,33 +3,34 @@
   <div class="header">
     <h1>🚀 部落格練習</h1>
     <p>練習轉換成 Vue.js</p>
-    <p>目前共有 0 篇文章</p>
+    <p>目前共有 {{ posts.length }} 篇文章</p>
   </div>
 
   <div class="container">
     <!-- 搜尋區域 -->
     <div class="search-section">
       <input type="text" class="search-input" placeholder="🔍 搜尋文章標題或內容..." v-model="keyword" />
+
+      <!-- 🔥 改成從 datas.json 的 tags 自動渲染 -->
       <div class="filter-tags">
         <button class="tag-btn active">全部標籤</button>
-        <button class="tag-btn">Vue.js</button>
-        <button class="tag-btn">JavaScript</button>
-        <button class="tag-btn">CSS</button>
-        <button class="tag-btn">前端</button>
-        <button class="tag-btn">後端</button>
+
+        <button v-for="t in tags" :key="t" class="tag-btn">
+          {{ t }}
+        </button>
       </div>
     </div>
 
     <!-- 統計資訊 -->
-    <div class="stats">顯示 0 / 0 篇文章</div>
+    <div class="stats">顯示 {{ filterPosts.length }} / {{ posts.length }} 篇文章</div>
 
     <!-- 文章列表 -->
     <div class="blog-grid">
-      <Card v-for="post in filterPosts" :post="post" />
+      <Card v-for="post in filterPosts" :key="post.id" :post="post" />
     </div>
 
     <!-- 無結果提示 -->
-    <div class="no-results">
+    <div v-if="filterPosts.length === 0" class="no-results">
       <h3>找不到相關文章</h3>
       <p>試試調整搜尋關鍵字或選擇不同的標籤</p>
     </div>
@@ -70,8 +71,10 @@ import Card from "./card.vue"
 import datas from "./mock/datas.json"
 
 let keyword = ref("")
+
+// 從 datas.json 取出 posts + tags
 let { posts, tags } = datas
 
+// 🔍 搜尋功能：只比對 title
 let filterPosts = computed(() => posts.filter((post) => post.title.includes(keyword.value)))
-// console.log(posts, tags)
 </script>

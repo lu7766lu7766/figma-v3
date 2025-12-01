@@ -86,19 +86,19 @@
       "id": 1,
       "name": "前端開發",
       "description": "前端相關技術文章",
-      "color": "#667eea"
+      "color": "#7ec8ff"
     },
     {
       "id": 2,
       "name": "後端開發",
       "description": "後端相關技術文章",
-      "color": "#764ba2"
+      "color": "#a6ddff"
     },
     {
       "id": 3,
       "name": "開發工具",
       "description": "開發工具和環境配置",
-      "color": "#f093fb"
+      "color": "#c9e9ff"
     }
   ],
   "tags": [
