@@ -13,11 +13,53 @@ export class GoogleAuth implements AuthStrategy {
   private scopes: string
   private isInitialized = false
   private initPromise: Promise<void> | null = null
+  private tokenConfig: {
+    expiresIn?: number | null
+    refreshThreshold: number
+  }
 
-  constructor(clientId: string, scopes: string[]) {
+  constructor(
+    clientId: string,
+    scopes: string[],
+    tokenConfig?: { expiresIn?: number | null; refreshThreshold?: number }
+  ) {
     this.clientId = clientId
     this.scopes = scopes.join(' ')
     this.tokenManager = new TokenManager()
+
+    // Initialize token config with defaults
+    this.tokenConfig = {
+      expiresIn: 3600,
+      refreshThreshold: 5 * 60 * 1000
+    }
+
+    // Validate and merge token config
+    if (tokenConfig) {
+      // Validate expiresIn
+      if (tokenConfig.expiresIn !== undefined && tokenConfig.expiresIn !== null) {
+        if (typeof tokenConfig.expiresIn !== 'number' || tokenConfig.expiresIn <= 0) {
+          throw new Error('auth.oauth.token.expiresIn must be a positive number or null')
+        }
+        this.tokenConfig.expiresIn = tokenConfig.expiresIn
+      } else if (tokenConfig.expiresIn === null) {
+        this.tokenConfig.expiresIn = null
+      }
+
+      // Validate refreshThreshold
+      if (tokenConfig.refreshThreshold !== undefined) {
+        if (tokenConfig.refreshThreshold <= 0) {
+          throw new Error('auth.oauth.token.refreshThreshold must be a positive number')
+        }
+
+        // If expiresIn is a number, validate refreshThreshold < expiresIn
+        const expiresIn = this.tokenConfig.expiresIn ?? 3600
+        if (typeof expiresIn === 'number' && tokenConfig.refreshThreshold >= expiresIn * 1000) {
+          throw new Error('auth.oauth.token.refreshThreshold must be less than expiresIn')
+        }
+
+        this.tokenConfig.refreshThreshold = tokenConfig.refreshThreshold
+      }
+    }
   }
 
   /**
@@ -78,7 +120,15 @@ export class GoogleAuth implements AuthStrategy {
           }
 
           if (response.access_token) {
-            const expiresIn = response.expires_in || 3600
+            // Use configured expiresIn, or fallback to Google's response
+            let expiresIn = this.tokenConfig.expiresIn
+
+            // If not explicitly configured, use Google's response or default
+            if (expiresIn === undefined) {
+              expiresIn = response.expires_in || 3600
+            }
+            // If configured as null, pass null for permanent login
+
             this.tokenManager.setAccessToken(response.access_token, expiresIn)
             gapi.client.setToken({ access_token: response.access_token })
             resolve()
@@ -131,14 +181,15 @@ export class GoogleAuth implements AuthStrategy {
 
   /**
    * Ensure user is authenticated
+   * Uses configured refresh threshold
    */
   async ensureAuthenticated(): Promise<void> {
     if (!this.isAuthenticated()) {
       throw new AuthenticationError('User is not authenticated. Please sign in first.')
     }
 
-    // Check if token is expiring soon
-    if (this.tokenManager.isTokenExpiringSoon()) {
+    // Check if token is expiring soon using configured threshold
+    if (this.tokenManager.isTokenExpiringSoon(this.tokenConfig.refreshThreshold)) {
       // Try to refresh by signing in again
       await this.signIn()
     }

@@ -1,6 +1,6 @@
 import { BaseModel, column, beforeSave, afterCreate, hasMany } from "@/sheets-orm"
 import type { HasMany } from "@/sheets-orm"
-import type { ModelQuery } from "@/sheets-orm"
+// import type { ModelQuery } from "@/sheets-orm"
 import Post from "./Post"
 
 /**
@@ -18,6 +18,108 @@ export default class User extends BaseModel {
   @column()
   declare age: number // 年齡
 
+  @column()
+  declare name: string // 姓名
+
+  @column()
+  declare email: string // Email
+
+  @column()
+  declare username: string // 使用者名稱
+
+  @column()
+  declare password: string // 密碼 (會被隱藏)
+
+  @column()
+  declare status: "active" | "inactive" | "suspended" | "pending" // 狀態
+
+  @column()
+  declare role: "user" | "admin" | "moderator" | "guest" // 角色
+
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: Date // 建立時間
+
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: Date // 更新時間
+
+  @column.dateTime()
+  declare deletedAt: Date | null // 軟刪除時間
+
+  @hasMany(() => Post, { foreignKey: "userId" })
+  declare posts: HasMany<typeof Post>
+
+  @beforeSave()
+  async updateTimestamps() {
+    if (this.isNew) {
+      this.createdAt = new Date()
+    }
+    this.updatedAt = new Date()
+  }
+
+  @beforeSave()
+  async hashPasswordIfChanged() {
+    // 如果密碼有變更,這裡可以進行雜湊
+    if (this.isDirty && "password" in this.dirty) {
+      // 實際專案中應該使用 bcrypt 等加密庫
+      console.log("Password changed, should hash it")
+    }
+  }
+
+  @beforeSave()
+  async setDefaults() {
+    if (this.isNew) {
+      // 設定預設值
+      this.status = this.status || "pending"
+      this.role = this.role || "user"
+      // this.isActive = this.isActive ?? true
+      // this.isPremium = this.isPremium ?? false
+      // this.isEmailVerified = this.isEmailVerified ?? false
+      // this.isPhoneVerified = this.isPhoneVerified ?? false
+      // this.receiveNewsletter = this.receiveNewsletter ?? true
+      // this.theme = this.theme || "auto"
+      // this.language = this.language || "zh-TW"
+      // this.plan = this.plan || "free"
+
+      // 設定空陣列
+      // this.tags = this.tags || []
+      // this.skills = this.skills || []
+      // this.interests = this.interests || []
+      // this.languages = this.languages || []
+      // this.permissions = this.permissions || []
+      // this.deviceIds = this.deviceIds || []
+
+      // 設定空物件
+      // this.metadata = this.metadata || {}
+      // this.settings = this.settings || {}
+      // this.address = this.address || {}
+      // this.socialLinks = this.socialLinks || {}
+
+      // 生成推薦碼
+      // if (!this.referralCode) {
+      //   this.referralCode = this.generateReferralCode()
+      // }
+    }
+  }
+
+  serialize() {
+    const data = super.serialize()
+
+    return {
+      ...data,
+      // 加入計算欄位
+      // fullName: this.fullName,
+      // isAdmin: this.isAdmin,
+      // isModerator: this.isModerator,
+      // isVerified: this.isVerified,
+      // isFullyVerified: this.isFullyVerified,
+      // isPremiumActive: this.isPremiumActive,
+      // ageGroup: this.ageGroup,
+      // profileCompletion: this.profileCompletion,
+      // hasAvatar: this.hasAvatar,
+
+      // 移除敏感資訊已在 hidden 中定義
+    }
+  }
   // @column()
   // declare salary: number // 薪資
 
@@ -25,20 +127,9 @@ export default class User extends BaseModel {
   // declare rating: number // 評分 (可以是小數)
 
   // ==================== 字串類型 ====================
-  @column()
-  declare name: string // 姓名
-
-  @column()
-  declare email: string // Email
 
   // @column()
   // declare phone: string // 電話
-
-  @column()
-  declare username: string // 使用者名稱
-
-  @column()
-  declare password: string // 密碼 (會被隱藏)
 
   // @column()
   // declare avatar: string // 頭像 URL
@@ -70,11 +161,6 @@ export default class User extends BaseModel {
   // declare receiveNewsletter: boolean // 是否接收電子報
 
   // ==================== 列舉類型 ====================
-  @column()
-  declare status: "active" | "inactive" | "suspended" | "pending" // 狀態
-
-  @column()
-  declare role: "user" | "admin" | "moderator" | "guest" // 角色
 
   // @column()
   // declare gender: "male" | "female" | "other" | "prefer_not_to_say" // 性別
@@ -89,49 +175,49 @@ export default class User extends BaseModel {
   // declare theme: "light" | "dark" | "auto" // 主題偏好
 
   // ==================== JSON 類型 ====================
-  @column()
-  declare metadata: {
-    lastLoginIp?: string
-    loginCount?: number
-    preferences?: Record<string, any>
-    suspensionReason?: string
-    [key: string]: any
-  } // 元數據
+  // @column()
+  // declare metadata: {
+  //   lastLoginIp?: string
+  //   loginCount?: number
+  //   preferences?: Record<string, any>
+  //   suspensionReason?: string
+  //   [key: string]: any
+  // } // 元數據
 
-  @column()
-  declare settings: {
-    notifications?: {
-      email?: boolean
-      push?: boolean
-      sms?: boolean
-    }
-    privacy?: {
-      profilePublic?: boolean
-      showEmail?: boolean
-    }
-  } // 設定
+  // @column()
+  // declare settings: {
+  //   notifications?: {
+  //     email?: boolean
+  //     push?: boolean
+  //     sms?: boolean
+  //   }
+  //   privacy?: {
+  //     profilePublic?: boolean
+  //     showEmail?: boolean
+  //   }
+  // } // 設定
 
-  @column()
-  declare address: {
-    street?: string
-    city?: string
-    state?: string
-    country?: string
-    postalCode?: string
-    coordinates?: {
-      lat: number
-      lng: number
-    }
-  } // 地址
+  // @column()
+  // declare address: {
+  //   street?: string
+  //   city?: string
+  //   state?: string
+  //   country?: string
+  //   postalCode?: string
+  //   coordinates?: {
+  //     lat: number
+  //     lng: number
+  //   }
+  // } // 地址
 
-  @column()
-  declare socialLinks: {
-    facebook?: string
-    twitter?: string
-    instagram?: string
-    linkedin?: string
-    github?: string
-  } // 社交連結
+  // @column()
+  // declare socialLinks: {
+  //   facebook?: string
+  //   twitter?: string
+  //   instagram?: string
+  //   linkedin?: string
+  //   github?: string
+  // } // 社交連結
 
   // ==================== 陣列類型 ====================
   // @column()
@@ -174,15 +260,6 @@ export default class User extends BaseModel {
   // @column.dateTime()
   // declare passwordChangedAt: Date | null // 密碼最後修改時間
 
-  @column.dateTime({ autoCreate: true })
-  declare createdAt: Date // 建立時間
-
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: Date // 更新時間
-
-  @column.dateTime()
-  declare deletedAt: Date | null // 軟刪除時間
-
   // ==================== 特殊欄位 ====================
   // @column()
   // declare apiToken: string | null // API Token (會被隱藏)
@@ -197,8 +274,6 @@ export default class User extends BaseModel {
   // declare referredBy: number | null // 被誰推薦 (User ID)
 
   // ==================== 關聯關係 ====================
-  @hasMany(() => Post, { foreignKey: "userId" })
-  declare posts: HasMany<typeof Post>
 
   // ==================== Scopes ====================
   // static scopes = {
@@ -236,92 +311,40 @@ export default class User extends BaseModel {
   // }
 
   // ==================== Hooks ====================
-  @beforeSave()
-  async updateTimestamps() {
-    if (this.isNew) {
-      this.createdAt = new Date()
-    }
-    this.updatedAt = new Date()
-  }
 
-  @beforeSave()
-  async hashPasswordIfChanged() {
-    // 如果密碼有變更,這裡可以進行雜湊
-    if (this.isDirty && "password" in this.dirty) {
-      // 實際專案中應該使用 bcrypt 等加密庫
-      console.log("Password changed, should hash it")
-    }
-  }
+  // @afterCreate()
+  // static async sendWelcomeEmail(user: User) {
+  //   console.log(`Welcome email should be sent to ${user.email}`)
+  //   // 實際專案中應該發送真實的歡迎郵件
+  // }
 
-  @beforeSave()
-  async setDefaults() {
-    if (this.isNew) {
-      // 設定預設值
-      this.status = this.status || "pending"
-      this.role = this.role || "user"
-      // this.isActive = this.isActive ?? true
-      // this.isPremium = this.isPremium ?? false
-      // this.isEmailVerified = this.isEmailVerified ?? false
-      // this.isPhoneVerified = this.isPhoneVerified ?? false
-      // this.receiveNewsletter = this.receiveNewsletter ?? true
-      // this.theme = this.theme || "auto"
-      // this.language = this.language || "zh-TW"
-      // this.plan = this.plan || "free"
+  // @afterCreate()
+  // static async logUserCreation(user: User) {
+  //   console.log(`New user created: ${user.name} (${user.email})`)
+  // }
 
-      // 設定空陣列
-      // this.tags = this.tags || []
-      // this.skills = this.skills || []
-      // this.interests = this.interests || []
-      // this.languages = this.languages || []
-      // this.permissions = this.permissions || []
-      // this.deviceIds = this.deviceIds || []
+  // // ==================== Accessors ====================
+  // get fullName(): string {
+  //   return this.name
+  // }
 
-      // 設定空物件
-      this.metadata = this.metadata || {}
-      this.settings = this.settings || {}
-      this.address = this.address || {}
-      this.socialLinks = this.socialLinks || {}
+  // get isAdmin(): boolean {
+  //   return this.role === "admin"
+  // }
 
-      // 生成推薦碼
-      // if (!this.referralCode) {
-      //   this.referralCode = this.generateReferralCode()
-      // }
-    }
-  }
+  // get isModerator(): boolean {
+  //   return this.role === "moderator"
+  // }
 
-  @afterCreate()
-  static async sendWelcomeEmail(user: User) {
-    console.log(`Welcome email should be sent to ${user.email}`)
-    // 實際專案中應該發送真實的歡迎郵件
-  }
+  // get isGuest(): boolean {
+  //   return this.role === "guest"
+  // }
 
-  @afterCreate()
-  static async logUserCreation(user: User) {
-    console.log(`New user created: ${user.name} (${user.email})`)
-  }
-
-  // ==================== Accessors ====================
-  get fullName(): string {
-    return this.name
-  }
-
-  get isAdmin(): boolean {
-    return this.role === "admin"
-  }
-
-  get isModerator(): boolean {
-    return this.role === "moderator"
-  }
-
-  get isGuest(): boolean {
-    return this.role === "guest"
-  }
-
-  get ageGroup(): "minor" | "adult" | "senior" {
-    if (this.age < 18) return "minor"
-    if (this.age >= 65) return "senior"
-    return "adult"
-  }
+  // get ageGroup(): "minor" | "adult" | "senior" {
+  //   if (this.age < 18) return "minor"
+  //   if (this.age >= 65) return "senior"
+  //   return "adult"
+  // }
 
   // get isVerified(): boolean {
   //   return this.isEmailVerified || this.isPhoneVerified
@@ -471,13 +494,13 @@ export default class User extends BaseModel {
   //   return this.permissions.includes(permission) || this.role === "admin"
   // }
 
-  async updateSettings(settings: Partial<typeof this.settings>): Promise<this> {
-    this.settings = {
-      ...this.settings,
-      ...settings,
-    }
-    return this.save()
-  }
+  // async updateSettings(settings: Partial<typeof this.settings>): Promise<this> {
+  //   this.settings = {
+  //     ...this.settings,
+  //     ...settings,
+  //   }
+  //   return this.save()
+  // }
 
   // private generateReferralCode(): string {
   //   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -489,23 +512,4 @@ export default class User extends BaseModel {
   // }
 
   // ==================== Serialization ====================
-  serialize() {
-    const data = super.serialize()
-
-    return {
-      ...data,
-      // 加入計算欄位
-      fullName: this.fullName,
-      isAdmin: this.isAdmin,
-      isModerator: this.isModerator,
-      // isVerified: this.isVerified,
-      // isFullyVerified: this.isFullyVerified,
-      // isPremiumActive: this.isPremiumActive,
-      ageGroup: this.ageGroup,
-      // profileCompletion: this.profileCompletion,
-      // hasAvatar: this.hasAvatar,
-
-      // 移除敏感資訊已在 hidden 中定義
-    }
-  }
 }

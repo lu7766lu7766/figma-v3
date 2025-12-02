@@ -77,7 +77,12 @@ export class ModelQuery<T extends ModelConstructor = ModelConstructor> extends Q
    */
   async first(): Promise<any | null> {
     this.applySoftDeleteConstraints()
-    const result = await super.first()
+    this.limit(1)
+
+    // Call the base get() to avoid double hydration from the overridden get()
+    const results = await super.get()
+    const result = results[0]
+
     return result ? this.hydrate(result) : null
   }
 

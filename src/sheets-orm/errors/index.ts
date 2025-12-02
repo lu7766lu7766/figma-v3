@@ -14,9 +14,19 @@ export class ORMError extends Error {
  */
 export class ValidationError extends ORMError {
   constructor(public messages: Record<string, string[]>) {
-    super('Validation failed')
+    super(ValidationError.formatMessage(messages))
     this.name = 'ValidationError'
     Object.setPrototypeOf(this, ValidationError.prototype)
+  }
+
+  private static formatMessage(messages: Record<string, string[]>): string {
+    const details = Object.entries(messages)
+      .filter(([, errs]) => errs && errs.length > 0)
+      .map(([field, errs]) => `${field}: ${errs.join(', ')}`)
+
+    return details.length > 0
+      ? `Validation failed - ${details.join(' | ')}`
+      : 'Validation failed'
   }
 }
 

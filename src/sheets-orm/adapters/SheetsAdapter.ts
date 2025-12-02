@@ -66,7 +66,7 @@ export class SheetsAdapter {
       if (error instanceof AuthenticationRequiredError) {
         throw error
       }
-      throw new ConnectionError(`Failed to read sheet "${sheetName}": ${error.message}`)
+      throw new ConnectionError(`Failed to read sheet "${sheetName}": ${this.formatError(error)}`)
     }
   }
 
@@ -94,7 +94,7 @@ export class SheetsAdapter {
       if (error instanceof AuthenticationRequiredError) {
         throw error
       }
-      throw new QueryError(`Failed to get sheet ID for "${sheetName}": ${error.message}`)
+      throw new QueryError(`Failed to get sheet ID for "${sheetName}": ${this.formatError(error)}`)
     }
   }
 
@@ -151,7 +151,7 @@ export class SheetsAdapter {
       if (error instanceof AuthenticationRequiredError) {
         throw error
       }
-      throw new QueryError(`Failed to append rows to "${sheetName}": ${error.message}`)
+      throw new QueryError(`Failed to append rows to "${sheetName}": ${this.formatError(error)}`)
     }
   }
 
@@ -206,7 +206,7 @@ export class SheetsAdapter {
       if (error instanceof AuthenticationRequiredError) {
         throw error
       }
-      throw new QueryError(`Failed to update rows in "${sheetName}": ${error.message}`)
+      throw new QueryError(`Failed to update rows in "${sheetName}": ${this.formatError(error)}`)
     }
   }
 
@@ -243,7 +243,7 @@ export class SheetsAdapter {
       if (error instanceof AuthenticationRequiredError) {
         throw error
       }
-      throw new QueryError(`Failed to delete rows from "${sheetName}": ${error.message}`)
+      throw new QueryError(`Failed to delete rows from "${sheetName}": ${this.formatError(error)}`)
     }
   }
 
@@ -266,7 +266,7 @@ export class SheetsAdapter {
       if (error instanceof AuthenticationRequiredError) {
         throw error
       }
-      throw new ConnectionError(`Failed to read headers from "${sheetName}": ${error.message}`)
+      throw new ConnectionError(`Failed to read headers from "${sheetName}": ${this.formatError(error)}`)
     }
   }
 
@@ -299,7 +299,7 @@ export class SheetsAdapter {
       if (error instanceof AuthenticationRequiredError) {
         throw error
       }
-      throw new QueryError(`Failed to read column "${columnName}" from "${sheetName}": ${error.message}`)
+      throw new QueryError(`Failed to read column "${columnName}" from "${sheetName}": ${this.formatError(error)}`)
     }
   }
 
@@ -331,6 +331,27 @@ export class SheetsAdapter {
 
       return value !== undefined ? value : ''
     })
+  }
+
+  /**
+   * Extract a useful error message from various error shapes
+   */
+  private formatError(error: any): string {
+    if (!error) return 'Unknown error'
+    if (typeof error === 'string') return error
+
+    const gapiMessage = error?.result?.error?.message
+    if (gapiMessage) return gapiMessage
+
+    if (error?.message) return error.message
+    if (error?.details) return error.details
+    if (error?.statusText) return error.statusText
+
+    try {
+      return JSON.stringify(error)
+    } catch {
+      return String(error)
+    }
   }
 
   /**
@@ -369,7 +390,7 @@ export class SheetsAdapter {
       if (error instanceof AuthenticationRequiredError) {
         throw error
       }
-      throw new QueryError(`Failed to clear sheet "${sheetName}": ${error.message}`)
+      throw new QueryError(`Failed to clear sheet "${sheetName}": ${this.formatError(error)}`)
     }
   }
 
@@ -408,7 +429,7 @@ export class SheetsAdapter {
       if (error instanceof AuthenticationRequiredError) {
         throw error
       }
-      throw new QueryError(`Failed to create sheet "${sheetName}": ${error.message}`)
+      throw new QueryError(`Failed to create sheet "${sheetName}": ${this.formatError(error)}`)
     }
   }
 

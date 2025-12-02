@@ -16,14 +16,18 @@ export default defineConfig({
     // OAuth2 for write operations (requires user login)
     oauth: {
       clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-      scopes: [
-        "https://www.googleapis.com/auth/spreadsheets",
-        "https://www.googleapis.com/auth/drive.readonly"
-      ],
+      scopes: ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive.readonly"],
+
+      // Token configuration (optional)
+      // token: {
+      //   expiresIn: 28800,  // 8 hours (in seconds) - extends login time
+      //   // expiresIn: null,   // permanent login - never expires locally
+      //   // refreshThreshold: 10 * 60 * 1000,  // 10 minutes (in milliseconds)
+      // }
     },
 
     // Preferred authentication mode (defaults to 'api_key')
-    preferredMode: 'api_key' as const,
+    preferredMode: "api_key" as const,
   },
 
   // Schema definitions for each sheet/table
@@ -33,15 +37,21 @@ export default defineConfig({
       // ==================== 數字類型 ====================
       id: Schema.number().primary().autoIncrement(),
       age: Schema.number().min(0).max(150),
+      name: Schema.string().required().minLength(2).maxLength(100),
+      email: Schema.string().required().unique().email(),
+      username: Schema.string().required().minLength(3).maxLength(30),
+      password: Schema.string().required().minLength(8),
+      status: Schema.enum(["active", "inactive", "suspended", "pending"] as const).default("pending"),
+      role: Schema.enum(["user", "admin", "moderator", "guest"] as const).default("user"),
+      createdAt: Schema.dateTime(),
+      updatedAt: Schema.dateTime(),
+      deletedAt: Schema.dateTime().nullable(),
+
       // salary: Schema.number().min(0),
       // rating: Schema.number().min(0).max(5),
 
       // ==================== 字串類型 ====================
-      name: Schema.string().required().minLength(2).maxLength(100),
-      email: Schema.string().required().unique().email(),
       // phone: Schema.string().pattern(/^\+?[0-9]{10,15}$/),
-      username: Schema.string().required().minLength(3).maxLength(30),
-      password: Schema.string().required().minLength(8),
       // avatar: Schema.string(),
       // website: Schema.string(),
 
@@ -57,8 +67,6 @@ export default defineConfig({
       // receiveNewsletter: Schema.boolean().default(true),
 
       // ==================== 列舉類型 ====================
-      status: Schema.enum(["active", "inactive", "suspended", "pending"] as const).default("pending"),
-      role: Schema.enum(["user", "admin", "moderator", "guest"] as const).default("user"),
       // gender: Schema.enum(["male", "female", "other", "prefer_not_to_say"] as const),
       // plan: Schema.enum(["free", "basic", "pro", "enterprise"] as const).default("free"),
       // language: Schema.enum(["zh-TW", "zh-CN", "en", "ja", "ko"] as const).default("zh-TW"),
@@ -86,9 +94,6 @@ export default defineConfig({
       // premiumExpiresAt: Schema.dateTime().nullable(),
       // suspendedAt: Schema.dateTime().nullable(),
       // passwordChangedAt: Schema.dateTime().nullable(),
-      createdAt: Schema.dateTime(),
-      updatedAt: Schema.dateTime(),
-      deletedAt: Schema.dateTime().nullable(),
 
       // ==================== 特殊欄位 ====================
       // apiToken: Schema.string().nullable(),

@@ -19,7 +19,7 @@ async function bootstrap() {
 
   // Ensure Google API client is initialized (loads gapi and restores tokens)
   await sheetsORM.db.initialize()
-  // app.use(sheetsORM)
+  app.use(sheetsORM)
 
   app.mount("#app")
 }

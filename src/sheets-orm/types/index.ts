@@ -12,6 +12,11 @@ export interface SheetsORMConfig {
     oauth?: {
       clientId: string
       scopes: string[]
+      // Token configuration
+      token?: {
+        expiresIn?: number | null      // Token expiry time in seconds, null = never expires
+        refreshThreshold?: number       // Refresh threshold in milliseconds
+      }
     }
     // Preferred authentication mode
     preferredMode?: 'api_key' | 'oauth2'

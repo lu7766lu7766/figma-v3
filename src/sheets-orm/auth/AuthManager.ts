@@ -11,6 +11,10 @@ export interface AuthManagerConfig {
   oauth?: {
     clientId: string
     scopes: string[]
+    token?: {
+      expiresIn?: number | null
+      refreshThreshold?: number
+    }
   }
   preferredMode?: AuthMode
 }
@@ -34,7 +38,7 @@ export class AuthManager {
    * Initialize available authentication strategies
    */
   private initializeStrategies(): void {
-    // Initialize API Key strategy if configured
+   // Initialize API Key strategy if configured
     if (this.config.apiKey) {
       const apiKeyAuth = new ApiKeyAuth(this.config.apiKey)
       this.strategies.set(AuthMode.API_KEY, apiKeyAuth)
@@ -44,7 +48,12 @@ export class AuthManager {
     if (this.config.oauth) {
       const oauth2Auth = new GoogleAuth(
         this.config.oauth.clientId,
-        this.config.oauth.scopes
+        this.config.oauth.scopes,
+        // Pass token configuration
+        this.config.oauth.token ? {
+          expiresIn: this.config.oauth.token.expiresIn,
+          refreshThreshold: this.config.oauth.token.refreshThreshold
+        } : undefined
       )
       this.strategies.set(AuthMode.OAUTH2, oauth2Auth)
     }
@@ -59,7 +68,20 @@ export class AuthManager {
    * Prioritizes API Key (fast, no user interaction) over OAuth2
    */
   async initialize(): Promise<void> {
-    // Try to initialize API Key first (fast, no user interaction)
+   // Try to initialize API Key first (fast, no user interaction)
+    const oauth2Auth = this.strategies.get(AuthMode.OAUTH2) as GoogleAuth | undefined
+
+    // Initialize OAuth2 first to restore any existing session
+    if (oauth2Auth) {
+      await oauth2Auth.initialize()
+
+      // If already have a valid token, prefer OAuth2
+      if (oauth2Auth.isAuthenticated()) {
+        this.currentStrategy = oauth2Auth
+        return
+      }
+    }
+
     if (this.strategies.has(AuthMode.API_KEY)) {
       const apiKeyAuth = this.strategies.get(AuthMode.API_KEY)!
       try {
@@ -71,15 +93,9 @@ export class AuthManager {
       }
     }
 
-    // If API Key is not available, try to initialize OAuth2 (but don't sign in)
-    if (this.strategies.has(AuthMode.OAUTH2)) {
-      const oauth2Auth = this.strategies.get(AuthMode.OAUTH2) as GoogleAuth
-      await oauth2Auth.initialize()
-
-      // If already have a valid token, switch to OAuth2
-      if (oauth2Auth.isAuthenticated()) {
-        this.currentStrategy = oauth2Auth
-      }
+    // If API Key failed or not available, fall back to initialized OAuth2 (even if not signed in)
+    if (oauth2Auth) {
+      this.currentStrategy = oauth2Auth
     }
   }
 
